@@ -1,4 +1,5 @@
 
+
 public class Hashtable {
 	private Node[] arr;
 	public Hashtable(){
@@ -6,61 +7,78 @@ public class Hashtable {
 	}
 	
 	public boolean contains (String key){
-		int pos = Math.abs(key.hashCode()%314527);
+		int pos = Math.abs(key.hashCode())%314527;
 		boolean result = false;
-		Node temp;
-		while (arr[pos].hasNext()){
-			temp = arr[pos].next;
+		Node temp = arr[pos];
+		while (temp!=null){
 			if(temp.key.equals(key)){
 				result = true;
+				return result;
 			}
+			temp = temp.next;
 		}
 		return result;
 	}
 	
 	public String get (String key){
-		int pos = Math.abs(key.hashCode()%314527);
+		int pos = Math.abs(key.hashCode())%314527;
 		String result = null;
-		Node temp;
-		while (arr[pos].hasNext()){
-			temp = arr[pos].next;
+		Node temp =arr[pos];	
+		while (temp!=null){
 			if(temp.key.equals(key)){
 				result = temp.value;
+				return result;
 			}
+			temp = temp.next;
 		}
 		return result;
 	}
 	
+	
 	public void put (String key, String value){
-		int pos = Math.abs(key.hashCode()%314527);
+		int pos = Math.abs(key.hashCode())%314527;
 		if (arr[pos]==null){
 			arr[pos] = new Node(key,value);
 		}else{
+			Node temp = arr[pos];
+			if (temp.key.equals(key)){
+				arr[pos].value = value; 
+			}
+			while((temp.next!=null)&&(temp.next.key!=key)){
+				temp = temp.next;
+			}
+			if(temp.next!=null){
+				temp.next.value=value;
+			}
 			Node n = new Node(key,value);
-			n.next = arr[pos];
-			arr[pos] = n;
+			temp.next=n;
 		}
 	}
 	
-	//not done
-	public String remove (String key){
-		int pos = Math.abs(key.hashCode()%314527);
-		String result = null;
-		Node temp;
-		if  (arr[pos].key.equals(key)){
-			result = arr[pos].value;
-		}else{
-			while (arr[pos].hasNext()){
-				temp = arr[pos].next;
-				if(temp.hasNext() && temp.next.key.equals(key)){
-					result = temp.next.value;
-					temp.next = temp.next.next;
-				}
-			}
+	/**
+	throws exception
+	*/
+	
+
+	public String remove (String key) throws Exception{
+		int pos = Math.abs(key.hashCode())%314527;
+		Node temp = arr[pos];	
+		if (temp.key.equals(key)){
+			arr[pos] = temp.next;
+			return temp.value;
 		}
-		return result;
-		
+		while ((temp.next!=null)&&(temp.next.key!=key)){
+			temp=temp.next;
+		}
+		if(temp.next!= null){
+			temp.next=temp.next.next;
+			return temp.next.value;
+		}
+		{
+			throw new Exception();
+		}
 	}
+
 	
 	private class Node{
 		private String key;
@@ -73,13 +91,6 @@ public class Hashtable {
 			next = null;
 		}
 		
-		public boolean hasNext(){
-			if(next==null){
-				return false;
-			}else{
-				return true;
-			}
-		}
 		
 		
 		
